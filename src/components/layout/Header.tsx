@@ -106,6 +106,8 @@ const NavItem = styled(Link)<{ $isActive: boolean }>`
     }
 `;
 
+
+
 function Header() {
     // useTheme() : styled-components가 제공하는 훅
     // 현재 테마에 해당하는 테마 정보를 리턴하는 메소드
