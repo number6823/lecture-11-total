@@ -1,6 +1,12 @@
-import { useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent, useEffect } from "react";
 import styled from "styled-components";
 import { FaPlus } from "react-icons/fa6";
+
+type TodoType = {
+    id: number;
+    text: string;
+    isCompleted: boolean;
+};
 
 const Container = styled.div`
     max-width: 600px;
@@ -17,12 +23,13 @@ const Title = styled.h2`
 `;
 
 const InputSection = styled.form`
-display: flex;
-gap: 10px;
-padding: 20px;
-border-radius: 16px;
-background-color: ${props => props.theme.colors.background.paper};
-border: 1px solid ${props => props.theme.colors.divider};`
+    display: flex;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: ${props => props.theme.colors.background.paper};
+    border: 1px solid ${props => props.theme.colors.divider};
+`;
 
 const StyledInput = styled.input`
     flex: 1;
@@ -57,15 +64,33 @@ const AddButton = styled.button`
 `;
 
 function TodoPage() {
-    const [inputValue, setInputValue] = useState("");  // 인풋에 입력된 값을 관리
-    const [todos, setTodos] = useState<string[]>([]);  // 할 일 목록을 관리
+    const [inputValue, setInputValue] = useState(""); // 인풋에 입력된 값을 관리
+    const [todos, setTodos] = useState<TodoType[]>(() => {
+        // todos라는 state가 TodoPage 컴포넌트가 불러와질 때 마련되는데,
+        // 그 저장소의 초기값은 이 함수에서 리턴된 값으로 결정됨
+        // localStorage에서 "todos"라는 키를 가진 값을 불러오고
+        // 그 값이 '있으면' Javascript의 객체(배열) 형태로 반환해서 리턴하고, '없으면' 빈 배열을 리턴
+        const storedTodos = localStorage.getItem("todos");
+        return storedTodos ? JSON.parse(storedTodos) : [];
+    }); // 할 일 목록을 관리
 
     const handleAddTodo = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!inputValue.trim()) return;
-        setTodos([...todos, inputValue]);
+        const newTodo: TodoType = {
+            id: Date.now(), // 고유값으로,사용자가 "저장하는 지금 시간"을 id로 쓰겠다.
+            text: inputValue,
+            isCompleted: false,
+        };
+        setTodos([...todos, newTodo]);
         setInputValue("");
     };
+
+    useEffect(() => {
+        // todos라는 state는 현재 Array를 저장하고 있기 때문에
+        // 그 값을 localStorage에 저장하기 위해서는 json 형식으로 바꿔줄 필요가 있음
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }, [todos]);
 
     return (
         <Container>
@@ -81,10 +106,9 @@ function TodoPage() {
                 </AddButton>
             </InputSection>
 
-
             <ul>
                 {todos.map((value, index) => (
-                    <li key={index}>{value}</li>
+                    <li key={index}>{value.text}</li>
                 ))}
             </ul>
         </Container>
