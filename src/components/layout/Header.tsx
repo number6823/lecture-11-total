@@ -1,7 +1,7 @@
 import styled, { useTheme } from "styled-components";
 import { FaCheckSquare, FaHome, FaMoon, FaSpaceShuttle } from "react-icons/fa";
 
-import { FaBitcoin, FaBook, FaFilm, FaRocket, FaSun } from "react-icons/fa6";
+import { FaBitcoin, FaBook, FaClipboardList, FaFilm, FaRocket, FaSun } from "react-icons/fa6";
 import { Link, useLocation } from "react-router";
 import { type ReactNode, useContext } from "react";
 import { ThemeContext } from "../../contexts/theme/ThemeContext.ts";
@@ -58,6 +58,10 @@ const menuList: MenuType[] = [
         label: "Movie",
         icon: <FaFilm size={18} />,
     },
+    {path: "/board",
+        label: "Board",
+        icon: <FaClipboardList size={18}/>
+    },
     {
         path: "/rocket",
         label: "Rocket",
@@ -68,6 +72,7 @@ const menuList: MenuType[] = [
         label: "Book",
         icon: <FaBook size={18} />,
     },
+
 ];
 
 const Logo = styled.div`
